@@ -5,6 +5,9 @@ import torch
 import cifar
 import flwr as fl
 from efficient import *
+import os
+
+import time
 # DEVICE = "cpu"
 
 DEVICE: str = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -84,13 +87,16 @@ def main() -> None:
     # Load model and data
     model =  EfficientNetB0()
     model.to(DEVICE)
-    # load path
-    load_path(model, 'efficientnet-b0.pth')
+    #  load path if path exist
+    if os.path.exists('efficientnet-b0.pth'):
+        load_path(model, 'efficientnet-b0.pth')
     trainloader, testloader, num_examples = cifar.load_data()
 
     # Start client
     client = CifarClient(model, trainloader, testloader, num_examples, 1)
-    fl.client.start_numpy_client(server_address="127.0.0.1:12345", client=client)
+    for _ in range(5):
+        fl.client.start_numpy_client(server_address="127.0.0.1:12345", client=client)
+        time.sleep(2)
 
 
 if __name__ == "__main__":

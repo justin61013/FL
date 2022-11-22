@@ -1,6 +1,6 @@
 from efficient import *
 import cifar
-from thop import profile
+# from thop import profile
 from collections import OrderedDict
 import time
 
@@ -53,5 +53,5 @@ time_end = time.time()
 print('time cost', time_end - time_start, 's')
 
 # caculate FLOPs
-flops, params = profile(model, inputs=(torch.randn(1, 3, 224, 224).to(DEVICE),))
-print('FLOPs: %.2fM, Params: %.2fM' % (flops / 1e6, params / 1e6))
+# flops, params = profile(model, inputs=(torch.randn(1, 3, 224, 224).to(DEVICE),))
+# print('FLOPs: %.2fM, Params: %.2fM' % (flops / 1e6, params / 1e6))

@@ -3,7 +3,25 @@ import torch
 import torch.nn as nn
 from time import sleep
 import torch.nn.utils.prune as prune
+from collections import OrderedDict
 
+def load_path(model, path):
+    new_state_dict = OrderedDict()
+    for key,value in torch.load(path).items():
+        if 'weight_orig' in key:
+            title = key.split('.')
+            name = title[0]+'.weight'
+            new_state_dict[name] = value
+            value1 = value
+            print(key)
+        elif 'weight_mask' in key:
+            title = key.split('.')
+            name = title[0]+'.weight'
+            new_state_dict[name] = value1
+            print(key)
+        else:
+            new_state_dict[key] = value
+    model.load_state_dict(new_state_dict)
 
 #模型剪枝
 class pruning():
@@ -13,8 +31,9 @@ class pruning():
         self.model = model
     # 定義模型
     def process(self):
-        state_dict = torch.load(self.path)
-        self.model.load_state_dict(state_dict)
+        # state_dict = torch.load(self.path)
+        # self.model.load_state_dict(state_dict)
+        load_path(self.model, self.path)
 
         # 取得每一層的名稱和參數
         name_list = [n for n,p in self.model.named_parameters()]

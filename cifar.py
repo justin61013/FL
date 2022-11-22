@@ -56,7 +56,7 @@ def load_data() -> Tuple[torch.utils.data.DataLoader, torch.utils.data.DataLoade
     testloader = torch.utils.data.DataLoader(testset, batch_size=32, shuffle=False)
     num_examples = {"trainset" : len(trainset), "testset" : len(testset)}
     print(num_examples)
-    return trainloader1, testloader, num_examples
+    return trainloader4, testloader, num_examples
 
 def train(
     net: Net,
