@@ -8,6 +8,7 @@ import torchvision.transforms as transforms
 from torch import Tensor
 from torchvision.datasets import CIFAR10
 import flwr as fl
+import product_dataset
 # import efficientnet_pytorch
 
 
@@ -28,35 +29,17 @@ def load_data() -> Tuple[torch.utils.data.DataLoader, torch.utils.data.DataLoade
     transform = transforms.Compose(
         [transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
     )
-    trainset = CIFAR10(DATA_ROOT, train=True, download=True, transform=transform)
-    print("Trainset size: ", len(trainset))
-    # divide training set into 5 training sets
-    trainset1, trainset2, trainset3, trainset4, trainset5 = torch.utils.data.random_split(
-        trainset, [10000, 10000, 10000, 10000, 10000]
-    )
-    trainloader1 = torch.utils.data.DataLoader(
-        trainset1, batch_size=4, shuffle=True, num_workers=2
-    )
-    trainloader2 = torch.utils.data.DataLoader(
-        trainset2, batch_size=4, shuffle=True, num_workers=2
-    )
-    trainloader3 = torch.utils.data.DataLoader(
-        trainset3, batch_size=4, shuffle=True, num_workers=2
-    )
-    trainloader4 = torch.utils.data.DataLoader(
-        trainset4, batch_size=4, shuffle=True, num_workers=2
-    )
-    trainloader5 = torch.utils.data.DataLoader(
-        trainset5, batch_size=4, shuffle=True, num_workers=2
-    )
-
-    
-    trainloader = torch.utils.data.DataLoader(trainset, batch_size=32, shuffle=True)
+    batch_size = 2
+    # trainset = CIFAR10(DATA_ROOT, train=True, download=True, transform=transform)
+    trainset = product_dataset.image_datasets
+    print(trainset)
+    trainloader = torch.utils.data.DataLoader(trainset[product_dataset.folder], batch_size=batch_size, shuffle=True, drop_last=True)
+    # trainloader = torch.utils.data.DataLoader(trainset, batch_size=32, shuffle=True)
     testset = CIFAR10(DATA_ROOT, train=False, download=True, transform=transform)
     testloader = torch.utils.data.DataLoader(testset, batch_size=32, shuffle=False)
     num_examples = {"trainset" : len(trainset), "testset" : len(testset)}
     print(num_examples)
-    return trainloader4, testloader, num_examples
+    return trainloader, testloader, num_examples
 
 def train(
     net: Net,
