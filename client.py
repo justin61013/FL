@@ -8,7 +8,7 @@ from efficient import *
 import os
 
 import time
-# DEVICE = "cpu"
+DEVICE = "cpu"
 
 DEVICE: str = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 # print(torch.cuda.is_available())
@@ -55,12 +55,16 @@ class CifarClient(fl.client.NumPyClient):
         return [val.cpu().numpy() for _, val in self.model.state_dict().items()]
 
     def set_parameters(self, parameters: List[np.ndarray]) -> None:
+        MAX = 0
         # Set model parameters from a list of NumPy ndarrays
         params_dict = zip(self.model.state_dict().keys(), parameters)
         state_dict = OrderedDict({k: torch.tensor(v) for k, v in params_dict})
         # load efficientnet state_dict
         self.model.load_state_dict(state_dict, strict=False)
         # save efficientnet state_dict
+        if cifar.test(self.model, self.testloader, device=DEVICE)[1] > MAX:
+            torch.save(self.model.state_dict(), 'efficientnet-b0.pth')
+            MAX = cifar.test(self.model, self.testloader, device=DEVICE)[1]
         torch.save(state_dict, 'efficientnet-b0.pth')
         print('save efficientnet-b0.pth')
         # self.model.load_state_dict(state_dict, strict=True)
@@ -71,6 +75,7 @@ class CifarClient(fl.client.NumPyClient):
         # Set model parameters, train model, return updated model parameters
         self.set_parameters(parameters)
         cifar.train(self.model, self.trainloader, epochs=self.epoc, device=DEVICE)
+        print('fit')
         return self.get_parameters(config={}), self.num_examples["trainset"], {}
 
     def evaluate(
@@ -79,6 +84,7 @@ class CifarClient(fl.client.NumPyClient):
         # Set model parameters, evaluate model on local test dataset, return result
         self.set_parameters(parameters)
         loss, accuracy = cifar.test(self.model, self.testloader, device=DEVICE)
+        print('evaluate')
         return float(loss), self.num_examples["testset"], {"accuracy": float(accuracy)}
 
 def main() -> None:
@@ -93,8 +99,8 @@ def main() -> None:
     trainloader, testloader, num_examples = cifar.load_data()
 
     # Start client
-    client = CifarClient(model, trainloader, testloader, num_examples, 1)
-    for _ in range(5):
+    client = CifarClient(model, trainloader, testloader, num_examples, 2)
+    for _ in range(10):
         fl.client.start_numpy_client(server_address="127.0.0.1:12345", client=client)
         time.sleep(2)
 

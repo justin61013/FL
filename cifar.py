@@ -29,15 +29,15 @@ def load_data() -> Tuple[torch.utils.data.DataLoader, torch.utils.data.DataLoade
     transform = transforms.Compose(
         [transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
     )
-    batch_size = 2
+    batch_size = 4
     # trainset = CIFAR10(DATA_ROOT, train=True, download=True, transform=transform)
     trainset = product_dataset.image_datasets
     print(trainset)
     trainloader = torch.utils.data.DataLoader(trainset[product_dataset.folder], batch_size=batch_size, shuffle=True, drop_last=True)
     # trainloader = torch.utils.data.DataLoader(trainset, batch_size=32, shuffle=True)
-    testset = CIFAR10(DATA_ROOT, train=False, download=True, transform=transform)
-    testloader = torch.utils.data.DataLoader(testset, batch_size=32, shuffle=False)
-    num_examples = {"trainset" : len(trainset), "testset" : len(testset)}
+    testset = product_dataset.image_datasets
+    testloader = torch.utils.data.DataLoader(trainset['val'], batch_size=batch_size, shuffle=True, drop_last=True)
+    num_examples = {"trainset" : len(trainset[product_dataset.folder]), "testset" : len(testset['val'])}
     print(num_examples)
     return trainloader, testloader, num_examples
 
@@ -53,13 +53,15 @@ def train(
     optimizer = torch.optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
     print(f"Training {epochs} epoch(s) w/ {len(trainloader)} batches each")
-
     # Train the network
     for epoch in range(epochs):  # loop over the dataset multiple times
         running_loss = 0.0
+        con = 0
+
         for i, data in enumerate(trainloader, 0):
             images, labels = data[0].to(device), data[1].to(device)
-
+            con+=1
+            print(labels, con) 
             # zero the parameter gradients
             optimizer.zero_grad()
 
