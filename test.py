@@ -36,7 +36,7 @@ model.eval()
 model.to(DEVICE)
 load_path(model, 'efficientnet-b0.pth')
 test_set = product_dataset.image_datasets
-testloader = torch.utils.data.DataLoader(test_set[product_dataset.folder], batch_size=16, shuffle=True, drop_last=True)
+testloader = torch.utils.data.DataLoader(test_set[p], batch_size=16, shuffle=True, drop_last=True)
 # start test
 criterion = nn.CrossEntropyLoss()
 correct = 0
