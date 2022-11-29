@@ -119,7 +119,7 @@ class MBConv(nn.Module):
 
 
 class EffNetV2(nn.Module):
-    def __init__(self, cfgs, num_classes=1000, width_mult=1.):
+    def __init__(self, cfgs, num_classes=38, width_mult=1.):
         super(EffNetV2, self).__init__()
         self.cfgs = cfgs
 

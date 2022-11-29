@@ -8,7 +8,7 @@ imgsz = 224
 
 data_transforms = {
     folder : transforms.Compose([
-        transforms.Resize((imgsz, imgsz)),  # resize
+        # transforms.Resize((imgsz, imgsz)),  # resize
         transforms.RandomRotation(45),  # random rotation
         transforms.ToTensor(),  # 轉換為張量
         transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])  # 正規化
@@ -16,8 +16,8 @@ data_transforms = {
     ]),
 
     val_folder: transforms.Compose([
-        transforms.Resize((imgsz, imgsz)),  # resize
+        # transforms.Resize((imgsz, imgsz)),  # resize
         transforms.ToTensor(),  # 張量轉換
     ])
 }
-image_datasets = {x: datasets.ImageFolder(root=os.path.join('C:/Users/USER/Desktop/FL_fin/FL_fin/FL/data_set',x), transform=data_transforms[x]) for x in [folder, val_folder]}
+image_datasets = {x: datasets.ImageFolder(root=os.path.join('C:/Users/USER/Desktop/FL_fin/FL_fin/FL/fl_data',x), transform=data_transforms[x]) for x in [folder, val_folder]}

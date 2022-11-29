@@ -100,8 +100,8 @@ def main() -> None:
     trainloader, testloader, num_examples = cifar.load_data()
 
     # Start client
-    client = CifarClient(model, trainloader, testloader, num_examples, 2)
-    for _ in range(10):
+    client = CifarClient(model, trainloader, testloader, num_examples, 1)
+    for _ in range(5):
         fl.client.start_numpy_client(server_address="127.0.0.1:12345", client=client)
         time.sleep(2)
 

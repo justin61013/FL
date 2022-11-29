@@ -1,3 +1,3 @@
 save_path_name = 'efficientnet-b0.pth'
-folder = 'data_black'
+folder = 'train2'
 val_folder = 'val'
