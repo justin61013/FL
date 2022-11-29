@@ -6,8 +6,9 @@ import cifar
 import flwr as fl
 from efficient import *
 import os
-
+from efficientv2 import *
 import time
+from config import *
 DEVICE = "cpu"
 
 DEVICE: str = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -49,24 +50,24 @@ class CifarClient(fl.client.NumPyClient):
         self.testloader = testloader
         self.num_examples = num_examples
         self.epoc = epoc
+        self.MAX = 0
 
     def get_parameters(self, config) -> List[np.ndarray]:
         # Return model parameters as a list of NumPy ndarrays
         return [val.cpu().numpy() for _, val in self.model.state_dict().items()]
 
     def set_parameters(self, parameters: List[np.ndarray]) -> None:
-        MAX = 0
         # Set model parameters from a list of NumPy ndarrays
         params_dict = zip(self.model.state_dict().keys(), parameters)
         state_dict = OrderedDict({k: torch.tensor(v) for k, v in params_dict})
         # load efficientnet state_dict
         self.model.load_state_dict(state_dict, strict=False)
         # save efficientnet state_dict
-        if cifar.test(self.model, self.testloader, device=DEVICE)[1] > MAX:
-            torch.save(self.model.state_dict(), 'efficientnet-b0.pth')
-            MAX = cifar.test(self.model, self.testloader, device=DEVICE)[1]
-        torch.save(state_dict, 'efficientnet-b0.pth')
-        print('save efficientnet-b0.pth')
+        if cifar.test(self.model, self.testloader, device=DEVICE)[1] > self.MAX:
+            torch.save(self.model.state_dict(), save_path_name)
+            self.MAX = cifar.test(self.model, self.testloader, device=DEVICE)[1]
+            # torch.save(state_dict, save_path_name)
+            print('save efficientnet-b0.pth')
         # self.model.load_state_dict(state_dict, strict=True)
 
     def fit(
@@ -91,11 +92,11 @@ def main() -> None:
     """Load data, start CifarClient."""
     
     # Load model and data
-    model =  EfficientNetB0()
+    model =  effnetv2_s()
     model.to(DEVICE)
     #  load path if path exist
-    if os.path.exists('efficientnet-b0.pth'):
-        load_path(model, 'efficientnet-b0.pth')
+    if os.path.exists(save_path_name):
+        load_path(model, save_path_name)
     trainloader, testloader, num_examples = cifar.load_data()
 
     # Start client

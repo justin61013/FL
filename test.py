@@ -5,11 +5,10 @@ from collections import OrderedDict
 import time
 import product_dataset
 import pruning
+from efficientv2 import *
+from config import *
 
-model = EfficientNetB0()
-
-pr = pruning.pruning(model, 'efficientnet-b0.pth')
-pr.process()
+model = effnetv2_s()
 
 def load_path(model, path):
     new_state_dict = OrderedDict()
@@ -30,13 +29,13 @@ def load_path(model, path):
     model.load_state_dict(new_state_dict)
 
 DEVICE = str(torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
-model = EfficientNetB0()
+model = effnetv2_s()
 # model.load_state_dict(torch.load('efficientnet-b0_74%_new.pth'))
 model.eval()
 model.to(DEVICE)
 load_path(model, 'efficientnet-b0.pth')
 test_set = product_dataset.image_datasets
-testloader = torch.utils.data.DataLoader(test_set[p], batch_size=16, shuffle=True, drop_last=True)
+testloader = torch.utils.data.DataLoader(test_set['val_2'], batch_size=16, shuffle=True, drop_last=True)
 # start test
 criterion = nn.CrossEntropyLoss()
 correct = 0

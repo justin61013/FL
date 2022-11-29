@@ -10,6 +10,7 @@ from torchvision.datasets import CIFAR10
 import flwr as fl
 import product_dataset
 # import efficientnet_pytorch
+from config import *
 
 
 # build efficientnet model
@@ -33,11 +34,11 @@ def load_data() -> Tuple[torch.utils.data.DataLoader, torch.utils.data.DataLoade
     # trainset = CIFAR10(DATA_ROOT, train=True, download=True, transform=transform)
     trainset = product_dataset.image_datasets
     print(trainset)
-    trainloader = torch.utils.data.DataLoader(trainset[product_dataset.folder], batch_size=batch_size, shuffle=True, drop_last=True)
+    trainloader = torch.utils.data.DataLoader(trainset[folder], batch_size=batch_size, shuffle=True, drop_last=True)
     # trainloader = torch.utils.data.DataLoader(trainset, batch_size=32, shuffle=True)
     testset = product_dataset.image_datasets
-    testloader = torch.utils.data.DataLoader(trainset['val'], batch_size=batch_size, shuffle=True, drop_last=True)
-    num_examples = {"trainset" : len(trainset[product_dataset.folder]), "testset" : len(testset['val'])}
+    testloader = torch.utils.data.DataLoader(trainset[val_folder], batch_size=batch_size, shuffle=True, drop_last=True)
+    num_examples = {"trainset" : len(trainset[folder]), "testset" : len(testset[val_folder])}
     print(num_examples)
     return trainloader, testloader, num_examples
 
@@ -61,7 +62,6 @@ def train(
         for i, data in enumerate(trainloader, 0):
             images, labels = data[0].to(device), data[1].to(device)
             con+=1
-            print(labels, con) 
             # zero the parameter gradients
             optimizer.zero_grad()
 
@@ -73,6 +73,8 @@ def train(
 
             # print statistics
             running_loss += loss.item()
+            print(con, running_loss/con) 
+
             if i % 100 == 99:  # print every 100 mini-batches
                 print("[%d, %5d] loss: %.3f" % (epoch + 1, i + 1, running_loss / 2000))
                 running_loss = 0.0
@@ -97,6 +99,7 @@ def test(
             total += labels.size(0)
             correct += (predicted == labels).sum().item()
     accuracy = correct / total
+    print("Accuracy of the network on the 10000 test images: %d %%" % (100 * accuracy))
     return loss, accuracy
 
 

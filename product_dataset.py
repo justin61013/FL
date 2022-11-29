@@ -1,10 +1,11 @@
 # load data set 'C:\Users\USER\Downloads\data_set'
 from torchvision import datasets,transforms
 import os
+from config import *
 
 imgsz = 224
 # data_white, data_black, data_glass
-folder = 'data_white'
+
 data_transforms = {
     folder : transforms.Compose([
         transforms.Resize((imgsz, imgsz)),  # resize
@@ -14,9 +15,9 @@ data_transforms = {
         
     ]),
 
-    "val": transforms.Compose([
+    val_folder: transforms.Compose([
         transforms.Resize((imgsz, imgsz)),  # resize
         transforms.ToTensor(),  # 張量轉換
     ])
 }
-image_datasets = {x: datasets.ImageFolder(root=os.path.join('C:/Users/USER/Desktop/FL_fin/FL_fin/FL/data_set',x), transform=data_transforms[x]) for x in [folder, 'val']}
+image_datasets = {x: datasets.ImageFolder(root=os.path.join('C:/Users/USER/Desktop/FL_fin/FL_fin/FL/data_set',x), transform=data_transforms[x]) for x in [folder, val_folder]}

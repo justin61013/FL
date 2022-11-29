@@ -46,7 +46,7 @@ class pruning():
 
                 #只剪維度大於一的weight
                 try:
-                    prune.ln_structured(m,name="weight", amount=0.1,n=1,dim=0)
+                    prune.ln_structured(m,name="weight", amount=0.4,n=1,dim=0)
                     a = m.weight.data
                     b = m.weight_mask.data
 
