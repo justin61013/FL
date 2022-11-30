@@ -1,3 +1,5 @@
-save_path_name = 'efficientnet-b0.pth'
-folder = 'train2'
+save_path_name = 'efficientnetV2-s.pth'
+folder = 'train'
 val_folder = 'val'
+GPU = 0
+pruning_ratio = 0.4

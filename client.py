@@ -11,7 +11,7 @@ import time
 from config import *
 DEVICE = "cpu"
 
-DEVICE: str = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+DEVICE: str = torch.device("cuda:"+ str(GPU) if torch.cuda.is_available() else "cpu")
 # print(torch.cuda.is_available())
 print(DEVICE)
 
