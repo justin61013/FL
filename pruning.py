@@ -4,6 +4,7 @@ import torch.nn as nn
 from time import sleep
 import torch.nn.utils.prune as prune
 from collections import OrderedDict
+from config import *
 
 def load_path(model, path):
     new_state_dict = OrderedDict()
@@ -46,7 +47,7 @@ class pruning():
 
                 #只剪維度大於一的weight
                 try:
-                    prune.ln_structured(m,name="weight", amount=0.4,n=1,dim=0)
+                    prune.ln_structured(m,name="weight", amount=pruning_ratio,n=1,dim=0)
                     a = m.weight.data
                     b = m.weight_mask.data
 

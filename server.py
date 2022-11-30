@@ -7,7 +7,7 @@ from config import *
 
 if __name__ == "__main__":
     while(True):
-        model = effnetv2_s()
-        pr = pruning.pruning(model, save_path_name)
+        # model = effnetv2_s()
+        # pr = pruning.pruning(model, save_path_name)
         fl.server.start_server(server_address="127.0.0.1:12345", config=fl.server.ServerConfig(num_rounds=5))
-        pr.process()
+        # pr.process()
