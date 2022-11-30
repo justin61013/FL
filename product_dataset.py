@@ -20,4 +20,6 @@ data_transforms = {
         transforms.ToTensor(),  # 張量轉換
     ])
 }
-image_datasets = {x: datasets.ImageFolder(root=os.path.join(r'C:\Users\justin\FL\fl_data',x), transform=data_transforms[x]) for x in [folder, val_folder]}
+def image_datasets():
+    image_datasets = {x: datasets.ImageFolder(root=os.path.join(r'C:\Users\justin\FL\fl_data',x), transform=data_transforms[x]) for x in [folder, val_folder]}
+    return image_datasets

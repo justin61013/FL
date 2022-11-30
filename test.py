@@ -8,8 +8,6 @@ import pruning
 from efficientv2 import *
 from config import *
 
-model = effnetv2_s()
-
 
 def load_path(model, path):
     new_state_dict = OrderedDict()
@@ -29,14 +27,13 @@ def load_path(model, path):
             new_state_dict[key] = value
     model.load_state_dict(new_state_dict)
 
-DEVICE = str(torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
+DEVICE = str(torch.device("cuda:"+str(GPU) if torch.cuda.is_available() else "cpu"))
 model = effnetv2_s()
 # model.load_state_dict(torch.load('efficientnet-b0_74%_new.pth'))
 model.eval()
 model.to(DEVICE)
 load_path(model, save_path_name)
-test_set = product_dataset.image_datasets
-testloader = torch.utils.data.DataLoader(test_set['val'], batch_size=16, shuffle=True, drop_last=True)
+_, testloader, _ = cifar.load_data()
 # start test
 criterion = nn.CrossEntropyLoss()
 correct = 0

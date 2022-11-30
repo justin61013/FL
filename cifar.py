@@ -36,14 +36,17 @@ def load_data() -> Tuple[torch.utils.data.DataLoader, torch.utils.data.DataLoade
         trainloader = torch.utils.data.DataLoader(trainset, batch_size=32, shuffle=True)
         testset = CIFAR10(DATA_ROOT, train=False, download=True, transform=transform)
         testloader = torch.utils.data.DataLoader(testset, batch_size=32, shuffle=False)
+        num_examples = {"trainset" : len(trainset), "testset" : len(testset)}
+
 
     elif training_set == 'product':
-        trainset = product_dataset.image_datasets
+        print('a')
+        trainset = product_dataset.image_datasets()
         trainloader = torch.utils.data.DataLoader(trainset[folder], batch_size=batch_size, shuffle=True, drop_last=True)
-        testset = product_dataset.image_datasets
+        testset = product_dataset.image_datasets()
         testloader = torch.utils.data.DataLoader(trainset[val_folder], batch_size=batch_size, shuffle=True, drop_last=True)
-        
-    num_examples = {"trainset" : len(trainset[folder]), "testset" : len(testset[val_folder])}
+        num_examples = {"trainset" : len(trainset[folder]), "testset" : len(testset[val_folder])}
+
     print(num_examples)
     return trainloader, testloader, num_examples
 
@@ -62,11 +65,9 @@ def train(
     # Train the network
     for epoch in range(epochs):  # loop over the dataset multiple times
         running_loss = 0.0
-        con = 0
 
         for i, data in enumerate(trainloader, 0):
             images, labels = data[0].to(device), data[1].to(device)
-            con+=1
             # zero the parameter gradients
             optimizer.zero_grad()
 
@@ -78,8 +79,6 @@ def train(
 
             # print statistics
             running_loss += loss.item()
-            print(con, running_loss/con) 
-
             if i % 100 == 99:  # print every 100 mini-batches
                 print("[%d, %5d] loss: %.3f" % (epoch + 1, i + 1, running_loss / 2000))
                 running_loss = 0.0
