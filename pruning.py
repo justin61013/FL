@@ -43,7 +43,10 @@ class pruning():
 
             #只剪weight檔
             if 'weight' in name:
-                m = getattr(self.model, name.split('.')[0])
+                m = getattr(self.model, name)
+                prune.ln_structured(m,name="weight", amount=pruning_ratio,n=1,dim=0)
+                m.weight.data =m.weight.data.mul(m.weight_mask.data)       
+
 
                 #只剪維度大於一的weight
                 try:
@@ -67,4 +70,5 @@ class pruning():
                     except:
                         pass
         # save model
-        torch.save(self.model.state_dict(), 'efficientnet-b0.pth')
+        torch.save(self.model.state_dict(), save_path_name)
+

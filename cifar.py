@@ -32,12 +32,14 @@ def load_data() -> Tuple[torch.utils.data.DataLoader, torch.utils.data.DataLoade
     )
     batch_size = 4
     # trainset = CIFAR10(DATA_ROOT, train=True, download=True, transform=transform)
-    trainset = product_dataset.image_datasets
-    print(trainset)
-    trainloader = torch.utils.data.DataLoader(trainset[folder], batch_size=batch_size, shuffle=True, drop_last=True)
-    # trainloader = torch.utils.data.DataLoader(trainset, batch_size=32, shuffle=True)
-    testset = product_dataset.image_datasets
-    testloader = torch.utils.data.DataLoader(trainset[val_folder], batch_size=batch_size, shuffle=True, drop_last=True)
+    if training_set == 'CIFAR':
+        trainloader = torch.utils.data.DataLoader(trainset, batch_size=32, shuffle=True)
+        
+    else:
+        trainset = product_dataset.image_datasets
+        trainloader = torch.utils.data.DataLoader(trainset[folder], batch_size=batch_size, shuffle=True, drop_last=True)
+        testset = product_dataset.image_datasets
+        testloader = torch.utils.data.DataLoader(trainset[val_folder], batch_size=batch_size, shuffle=True, drop_last=True)
     num_examples = {"trainset" : len(trainset[folder]), "testset" : len(testset[val_folder])}
     print(num_examples)
     return trainloader, testloader, num_examples
