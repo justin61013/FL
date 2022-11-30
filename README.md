@@ -16,8 +16,11 @@ python client.py
 python test.py
 
 Software requirement
+
 python 3.7.6
+
 flower 1.2.0
+
 torch 1.13.0+cu117
 
 OS
